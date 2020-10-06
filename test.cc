@@ -3,36 +3,36 @@
 namespace operations_research {
   // Problemas de gestão de produção
   void rentPlaning(){
-    //Dados
-    std::vector<double> custoAluguelMes = {325.0, 400.0, 405.0, 320.0, 190.0};
-    std::vector<double> valorDescontoMes = {0.0, 70.0, 160.0, 220.0, 300.0};
-    std::vector<double> espacoMinimoMes = {10000.0, 30000.0, 60000.0, 50000.0, 80000.0};
-    int mesesQtd = 5;
+    //Data
+    std::vector<double> costRentMonth = {325.0, 400.0, 405.0, 320.0, 190.0};
+    std::vector<double> monthlyDiscountConst = {0.0, 70.0, 160.0, 220.0, 300.0};
+    std::vector<double> minimumSpaceMonth = {10000.0, 30000.0, 60000.0, 50000.0, 80000.0};
+    int problemSize = 5;
 
-    // Criar instância do resolvedor
+    // Create solver instance
     MPSolver solver("misture_problem", MPSolver::GLOP_LINEAR_PROGRAMMING);
     const double infinity = solver.infinity();
 
-    // Cria variáveis do problema
-    std::vector<const MPVariable*> x(mesesQtd);
-    for(int i = 0; i < mesesQtd; i++){ 
+    // Create problem variables
+    std::vector<const MPVariable*> x(problemSize);
+    for(int i = 0; i < problemSize; i++){ 
       x[i] = solver.MakeNumVar(0.0, infinity, "x" + std::to_string(i));
     }
 
     LOG(INFO) << "Number of variables = " << solver.NumVariables();
 
-    // Declara função objetivo
+    // Declare objective function
     MPObjective* const objective = solver.MutableObjective();
-    for(int i = 0; i < mesesQtd; i++){
-      objective->SetCoefficient(x[i], custoAluguelMes[i] - valorDescontoMes[mesesQtd-i-1]);
+    for(int i = 0; i < problemSize; i++){
+      objective->SetCoefficient(x[i], costRentMonth[i] - monthlyDiscountConst[problemSize-i-1]);
     }
 
     objective->SetMinimization();
 
-    // Declara restrições
-    std::vector<MPConstraint*> c0(mesesQtd);
-    for(int i = 0; i < mesesQtd; i++){
-      c0[i] = solver.MakeRowConstraint(espacoMinimoMes[i], infinity);
+    // Declare problem constraints
+    std::vector<MPConstraint*> c0(problemSize);
+    for(int i = 0; i < problemSize; i++){
+      c0[i] = solver.MakeRowConstraint(minimumSpaceMonth[i], infinity);
       for(int j = 0; j < i+1; j++){
         c0[i]->SetCoefficient(x[j], 1);
       }
@@ -40,21 +40,21 @@ namespace operations_research {
 
     LOG(INFO) << "Number of constraints = " << solver.NumConstraints();
 
-    // Resolve o problema
+    // Solve the problem
     solver.Solve();
 
     LOG(INFO) << "Solution:" << std::endl;
     LOG(INFO) << "Objective value = " << objective->Value();
-    for(int i = 0; i < mesesQtd; i++){ 
+    for(int i = 0; i < problemSize; i++){ 
       LOG(INFO) << x[i]->name() << " = " << x[i]->solution_value();
     }
   }
   void consultantsAllocation(){
-    // Criar instância do resolvedor
+    // Create solver instance
     MPSolver solver("misture_problem", MPSolver::GLOP_LINEAR_PROGRAMMING);
     const double infinity = solver.infinity();
 
-    // Cria variáveis do problema
+    // Create problem variables
     std::vector<const MPVariable*> x(7);
     for(int i = 0; i < 7; i++){ 
       x[i] = solver.MakeNumVar(0, infinity, "x" + std::to_string(i));
@@ -62,7 +62,7 @@ namespace operations_research {
 
     LOG(INFO) << "Number of variables = " << solver.NumVariables();
 
-    // Declara função objetivo
+    // Declare objective function
     MPObjective* const objective = solver.MutableObjective();
     for(int i = 0; i < 4; i++){
       objective->SetCoefficient(x[i], 120);
@@ -74,7 +74,7 @@ namespace operations_research {
 
     objective->SetMinimization();
 
-    // Declara restrições
+    // Declare problem constraints
     MPConstraint* c0 = solver.MakeRowConstraint(4.0, infinity);
     c0->SetCoefficient(x[0], 1);   
     c0->SetCoefficient(x[4], 1);  
@@ -113,7 +113,7 @@ namespace operations_research {
 
     LOG(INFO) << "Number of constraints = " << solver.NumConstraints();
 
-    // Resolve o problema
+    // Solve the problem
     solver.Solve();
 
     LOG(INFO) << "Solution:" << std::endl;
@@ -132,11 +132,11 @@ namespace operations_research {
     int productsQtd = products.size();
     int resourcesQtd = resources.size();
 
-    // Criar instância do resolvedor
+    // Create solver instance
     MPSolver solver("misture_problem", MPSolver::GLOP_LINEAR_PROGRAMMING);
     const double infinity = solver.infinity();
 
-    // Cria variáveis do problema
+    // Create problem variables
     std::vector<const MPVariable*> x(productsQtd);
     for(int i = 0; i < productsQtd; i++){ 
       x[i] = solver.MakeNumVar(0, infinity, "x" + std::to_string(i));
@@ -144,7 +144,7 @@ namespace operations_research {
 
     LOG(INFO) << "Number of variables = " << solver.NumVariables();
 
-    // Declara função objetivo
+    // Declare objective function
     MPObjective* const objective = solver.MutableObjective();
     for(int i = 0; i < productsQtd; i++){
       objective->SetCoefficient(x[i], price[i]);
@@ -152,7 +152,7 @@ namespace operations_research {
 
     objective->SetMaximization();
 
-    // Declara restrições
+    // Declare problem constraints
     std::vector<MPConstraint*> c0(resourcesQtd);
     for(int i = 0; i < resourcesQtd; i++){
       c0[i] = solver.MakeRowConstraint(0.0, availableResources[i]);
@@ -163,7 +163,7 @@ namespace operations_research {
 
     LOG(INFO) << "Number of constraints = " << solver.NumConstraints();
 
-    // Resolve o problema
+    // Solve the problem
     solver.Solve();
 
     LOG(INFO) << "Solution:" << std::endl;
@@ -174,110 +174,110 @@ namespace operations_research {
   
   }
   void plantingCultivation(){
-    // Dados
-    double areaCultivavel = 200000.0;
-    double capacidadeArmazem = 60000.0;
-    std::vector<std::string> cultura = {"Trigo", "Arroz", "Milho"};
-    std::vector<double> produtividade = {0.2, 0.3, 0.4};
-    std::vector<double> lucro = {0.11, 0.04, 0.02};
-    std::vector<double> demanda = {400.0, 800.0, 10000.0};
-    int itensQtd = cultura.size();
+    // Data
+    double cultivableArea = 200000.0;
+    double warehouseCapacity = 60000.0;
+    std::vector<std::string> cultivation = {"Trigo", "Arroz", "Milho"};
+    std::vector<double> productivity = {0.2, 0.3, 0.4};
+    std::vector<double> profit = {0.11, 0.04, 0.02};
+    std::vector<double> demand = {400.0, 800.0, 10000.0};
+    int problemSize = cultivation.size();
     
-    // Criar instância do resolvedor
+    // Create solver instance
     MPSolver solver("misture_problem", MPSolver::GLOP_LINEAR_PROGRAMMING);
     const double infinity = solver.infinity();
 
-    // Cria variáveis do problema
-    std::vector<const MPVariable*> x(itensQtd);
-    for(int i = 0; i < itensQtd; i++){ 
-      x[i] = solver.MakeNumVar(demanda[i], infinity, "x" + std::to_string(i));
+    // Create problem variables
+    std::vector<const MPVariable*> x(problemSize);
+    for(int i = 0; i < problemSize; i++){ 
+      x[i] = solver.MakeNumVar(demand[i], infinity, "x" + std::to_string(i));
     }
 
     LOG(INFO) << "Number of variables = " << solver.NumVariables();
 
-    // Declara função objetivo
+    // Declare objective function
     MPObjective* const objective = solver.MutableObjective();
-    for(int i = 0; i < itensQtd; i++){
-      objective->SetCoefficient(x[i], produtividade[i]*lucro[i]);
+    for(int i = 0; i < problemSize; i++){
+      objective->SetCoefficient(x[i], productivity[i]*profit[i]);
     }
 
     objective->SetMaximization();
 
-    // Declara restrições
-    MPConstraint* const c0 = solver.MakeRowConstraint(0.0, areaCultivavel);
-    for(int i = 0; i < itensQtd; i++){
+    // Declare problem constraints
+    MPConstraint* const c0 = solver.MakeRowConstraint(0.0, cultivableArea);
+    for(int i = 0; i < problemSize; i++){
       c0->SetCoefficient(x[i], 1);
     } 
 
-    MPConstraint* const c1 = solver.MakeRowConstraint(0.0, capacidadeArmazem);
-    for(int i = 0; i < itensQtd; i++){
-      c1->SetCoefficient(x[i], produtividade[i]);
+    MPConstraint* const c1 = solver.MakeRowConstraint(0.0, warehouseCapacity);
+    for(int i = 0; i < problemSize; i++){
+      c1->SetCoefficient(x[i], productivity[i]);
     }  
 
     LOG(INFO) << "Number of constraints = " << solver.NumConstraints();
 
-    // Resolve o problema
+    // Solve the problem
     solver.Solve();
 
     LOG(INFO) << "Solution:" << std::endl;
     LOG(INFO) << "Objective value = " << objective->Value();
-    for(int i = 0; i < itensQtd; i++){
+    for(int i = 0; i < problemSize; i++){
       LOG(INFO) << x[i]->name() << " = " << x[i]->solution_value();
     }
 
   }
-  void MistureProblem(){
-    //Dados
-    int intensQtd = 3;
-    std::vector<std::string> nutrientes = {"Osso", "Soja", "Peixe", "Ração"};
-    std::vector<double> proteina = {0.2, 0.5, 0.4, 0.3};
-    std::vector<double> calcio = {0.6, 0.4, 0.4, 0.5};
-    std::vector<double> custo = {0.56, 0.81, 0.46};
+  void mistureProblem(){
+    //Data
+    int problemSize = 3;
+    std::vector<std::string> nutrients = {"Osso", "Soja", "Peixe", "Ração"};
+    std::vector<double> protein = {0.2, 0.5, 0.4, 0.3};
+    std::vector<double> calcium = {0.6, 0.4, 0.4, 0.5};
+    std::vector<double> cost = {0.56, 0.81, 0.46};
 
-    // Criar instância do resolvedor
+    // Create solver instance
     MPSolver solver("misture_problem", MPSolver::GLOP_LINEAR_PROGRAMMING);
     const double infinity = solver.infinity();
 
-    // Cria variáveis do problema
+    // Create problem variables
     std::vector<const MPVariable*> x(intensQtd);
-    for(int i = 0; i < intensQtd; i++){ 
+    for(int i = 0; i < problemSize; i++){ 
       x[i] = solver.MakeNumVar(0.0, 1.0, "x" + std::to_string(i));
     }
 
     LOG(INFO) << "Number of variables = " << solver.NumVariables();
 
-    // Declara função objetivo
+    // Declare objective function
     MPObjective* const objective = solver.MutableObjective();
-    for(int i = 0; i < intensQtd; i++){
-      objective->SetCoefficient(x[i], custo[i]);
+    for(int i = 0; i < problemSize; i++){
+      objective->SetCoefficient(x[i], cost[i]);
     }
 
     objective->SetMinimization();
 
-    // Declara restrições
-    MPConstraint* const c0 = solver.MakeRowConstraint(proteina[intensQtd], infinity);
-    for(int i = 0; i < intensQtd; i++){
-      c0->SetCoefficient(x[i], proteina[i]);
+    // Declare problem constraints
+    MPConstraint* const c0 = solver.MakeRowConstraint(protein[intensQtd], infinity);
+    for(int i = 0; i < problemSize; i++){
+      c0->SetCoefficient(x[i], protein[i]);
     }  
 
-    MPConstraint* const c1 = solver.MakeRowConstraint(calcio[intensQtd], infinity);
-    for(int i = 0; i < intensQtd; i++){
-      c1->SetCoefficient(x[i], calcio[i]);
+    MPConstraint* const c1 = solver.MakeRowConstraint(calcium[intensQtd], infinity);
+    for(int i = 0; i < problemSize; i++){
+      c1->SetCoefficient(x[i], calcium[i]);
     }
 
     MPConstraint* const c2 = solver.MakeRowConstraint(1.0, 1.0);
-    for(int i = 0; i < intensQtd; i++){
+    for(int i = 0; i < problemSize; i++){
       c2->SetCoefficient(x[i], 1);
     }
 
     LOG(INFO) << "Number of constraints = " << solver.NumConstraints();
 
-    // Resolve o problema
+    // Solve the problem
     solver.Solve();
 
     LOG(INFO) << "Solution:" << std::endl;
     LOG(INFO) << "Objective value = " << objective->Value();
-    for(int i = 0; i < intensQtd; i++){
+    for(int i = 0; i < problemSize; i++){
       LOG(INFO) << x[i]->name() << " = " << x[i]->solution_value();
     }
   }
