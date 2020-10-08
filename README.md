@@ -1,6 +1,6 @@
 # Linear Programing (LP)
 
-A Programação Linear se trata de uma importante área da Pesquisa Operacional (PO). Ela estuda formas de resolver problemas de otimização que podem ser descritos matematicamente a partir de funções lineares (Ex: `y <= 3`). E sua grande importância se dá pelo fato de que uma grande gama de problemas de otimização podem ser descritos a partir de funções lineares ou usam técnicas de LP para resolver sub-problemas.
+A Programação Linear se trata de uma importante área da Pesquisa Operacional (PO). Ela estuda formas de resolver problemas de otimização que podem ser descritos matematicamente a partir de funções lineares (Ex: `y <= 3`). Sua importância se dá pelo fato de que uma grande gama de problemas de otimização podem ser descritos a partir de funções lineares ou usam técnicas de LP para resolver sub-problemas.
 
 ## Optmization
 
@@ -16,7 +16,9 @@ Neste repositório busco expor algumas implementações que realizo, com fins de
   - Problemas de programação de projetos
   - Problemas de gestão financeira
 
-Os problemas implementados são retirados de materiais didático fornecidos por pesquisadores e em livros sobre o assunto. Para que você possa entender o problema abordado por cada implementação, deixarei a referência necessária.
+Os problemas implementados são retirados de materiais didático fornecidos por pesquisadores e em livros sobre o assunto. Para que você possa entender o problema abordado por cada implementação, deixarei a referência necessária ou como links, ou em alguma paste neste repositório. 
+
+Espero que gostem :D
 
 ## Executando os códigos
 
